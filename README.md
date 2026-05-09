@@ -15,7 +15,7 @@
 
 ## How It Works
 
-[Compose HotSwan](https://hotswan.dev/) uses incremental Kotlin compilation combined with runtime class swapping on the Android Runtime (ART) to deliver fast, reliable hot reload in real Android devices. When you save a file, HotSwan compiles only the changed code, extracts modified classes, pushes them to the connected device, and triggers Compose recomposition. The entire pipeline typically completes in under a few seconds.
+[Compose HotSwan](https://hotswan.dev/) uses incremental Kotlin compilation combined with runtime class swapping on the Android Runtime (ART) to deliver fast, reliable hot reload on real Android devices. When you save a file, HotSwan compiles only the changed code, extracts modified classes, pushes them to the connected device, and triggers Compose recomposition. The entire pipeline typically completes in under a few seconds. For constant-only edits, it completes in under 50 milliseconds via the literal patching fast path.
 
 For a detailed breakdown, visit the [How It Works](https://hotswan.dev/docs/how-it-works) documentation.
 
@@ -30,12 +30,33 @@ This repository serves as the public issue tracker for [Compose HotSwan](https:/
 
 ## Features
 
-- **Instant hot reload**: Apply UI changes to a running Android app without rebuilding or restarting. Your navigation stack, scroll position, ViewModel state, and `remember {}` values all stay intact.
-- **Broad change support**: Modify composable function bodies, non composable functions, layout parameters, animations, conditional logic, resource values, data classes, and ViewModel methods.
-- **Multi module**: File paths are automatically resolved to the correct Gradle module. Changes in any module are compiled and pushed independently.
-- **Screenshot snapshot**: Every hot reload automatically captures a device screenshot paired with a code diff. Browse a visual timeline of your changes, revert code to any previous snapshot, and export reports for design collaboration.
-- **AI integration**: Use Claude Code, Cursor, GitHub Copilot, or any AI tool that edits files on disk. HotSwan detects file changes, compiles, and pushes updates to the device automatically.
-- **MCP Server**: Connect AI assistants via the Model Context Protocol to iterate on your UI with natural language, seeing each change reflected on the device in real time.
+### Hot Reload
+
+- **[Instant hot reload](https://hotswan.dev/docs/how-it-works)**: Apply UI changes to a running Android app without rebuilding or restarting. Your navigation stack, scroll position, ViewModel state, and `remember {}` values all stay intact.
+- **[Literal patching](https://hotswan.dev/docs/literal-patching)**: Constant-only edits (string templates, numbers, hex colors, XML resource values) bypass the build pipeline entirely and apply in under 50ms. Ideal for fine-tuning colors, spacing, and copy.
+- **[Broad change support](https://hotswan.dev/docs/supported-changes)**: Modify composable bodies, non-composable functions, modifiers, animation specs, conditional logic, resource values, data class properties, and ViewModel methods. Add new composable functions, reorder existing calls, and edit extension/suspend/vararg functions.
+- **[State preservation](https://hotswan.dev/docs/state-preservation)**: Navigation back stack, scroll position, focus, IME state, animation progress, `remember`/`rememberSaveable`, and ViewModel instances survive every reload.
+- **[Multi-module](https://hotswan.dev/docs/how-it-works)**: File paths are automatically resolved to the correct Gradle module. Changes in any module are compiled and pushed independently.
+- **[Kotlin Multiplatform](https://hotswan.dev/docs/kotlin-multiplatform)**: Hot reload works for the Android target of KMP projects, covering both the Android application module and shared KMP modules compiled into the app.
+
+### Multi-Device & Preview
+
+- **[Multi-device broadcast](https://hotswan.dev/docs/multi-device)**: Connect any number of devices and edit once to see changes everywhere simultaneously. Useful for responsive layout testing across screen sizes, verifying behavior across API levels, and demo preparation.
+- **[Preview Runner](https://hotswan.dev/docs/preview)**: Render `@Preview` composables directly on a physical device in under 0.5 seconds without a full rebuild. Iterate on previews with real device behavior and actual data.
+- **[Preview Screenshot](https://hotswan.dev/docs/screenshot-testing)**: Automatically discover every `@Preview` function in your project, capture screenshots on a real device, and generate a browsable HTML catalog with module grouping and dark/light theme support. No test code required.
+
+### Design Collaboration
+
+- **[Snapshot timeline](https://hotswan.dev/docs/snapshot)**: Every hot reload automatically captures a device screenshot paired with a git diff. Browse the visual history in the IDE tool window, time-travel back to revert code to any snapshot, and export self-contained visual reports for designers to review.
+
+### AI Integration
+
+- **[AI-assisted reload](https://hotswan.dev/docs/hot-reload-with-ai)**: Use Claude Code, Cursor, GitHub Copilot, or any AI tool that edits files on disk. HotSwan detects file changes, compiles, and pushes updates to the device automatically.
+- **[MCP Server](https://hotswan.dev/docs/mcp-server)**: Connect AI assistants via the Model Context Protocol to iterate on your UI with natural language, seeing each change reflected on the device in real time.
+- **[Agent Skill](https://hotswan.dev/docs/agent-skill)**: Drop-in instruction files (General + MCP variants) that teach AI coding assistants how to use HotSwan effectively, including reload-friendly editing patterns and screenshot/diagnose workflows.
+
+### Build Integration
+
 - **Debug only**: The Gradle plugin adds the client library as `debugImplementation` only. Release builds have zero overhead.
 
 Explore the full feature set at [hotswan.dev/docs](https://hotswan.dev/docs).
@@ -108,16 +129,58 @@ See the full [Requirements](https://hotswan.dev/docs/requirements) documentation
 
 ## Documentation
 
-Visit [hotswan.dev/docs](https://hotswan.dev/docs) for the complete documentation, including:
+Visit [hotswan.dev/docs](https://hotswan.dev/docs) for the complete documentation.
 
+**Getting Started**
+- [Overview](https://hotswan.dev/docs)
 - [Why HotSwan](https://hotswan.dev/docs/why-hotswan)
+- [How It Works](https://hotswan.dev/docs/how-it-works)
+- [Requirements](https://hotswan.dev/docs/requirements)
+- [Gradle Configuration](https://hotswan.dev/docs/gradle-configuration)
+
+**Hot Reload**
 - [Supported Changes](https://hotswan.dev/docs/supported-changes)
+- [Literal Patching](https://hotswan.dev/docs/literal-patching)
 - [State Preservation](https://hotswan.dev/docs/state-preservation)
-- [Screenshot Snapshot](https://hotswan.dev/docs/snapshot)
+- [Kotlin Multiplatform](https://hotswan.dev/docs/kotlin-multiplatform)
+
+**Multi-Device & Preview**
+- [Multi-Device](https://hotswan.dev/docs/multi-device)
+- [Preview Runner](https://hotswan.dev/docs/preview)
+- [Preview Screenshot](https://hotswan.dev/docs/screenshot-testing)
+
+**Snapshot & AI**
+- [Snapshot](https://hotswan.dev/docs/snapshot)
 - [Hot Reload with AI](https://hotswan.dev/docs/hot-reload-with-ai)
 - [MCP Server](https://hotswan.dev/docs/mcp-server)
+- [Agent Skill](https://hotswan.dev/docs/agent-skill)
+
+**Reference**
 - [Limitations](https://hotswan.dev/docs/limitations)
 - [Troubleshooting](https://hotswan.dev/docs/troubleshooting)
+- [Lifetime License](https://hotswan.dev/docs/lifetime-license)
+- [Releases](https://hotswan.dev/docs/releases)
+
+## Blog Posts
+
+Read about the ideas, internals, and use cases behind Compose HotSwan on the [official blog](https://hotswan.dev/blog).
+
+**Hot Reload Internals**
+- [Compose Hot Reload: Real-Time UI Updates on Running Android Devices](https://hotswan.dev/blog/compose-hot-reload): How HotSwan eliminates the build-wait-navigate loop and reloads Compose UI changes on a running device in under a second.
+- [Why Your Android Build Takes So Long for a One Line Change](https://hotswan.dev/blog/android-build-pipeline): A deep dive into the Android build pipeline (Gradle, Kotlin compilation, dexing, install) that explains where the seconds go.
+
+**Live Tuning Workflows**
+- [Tuning Compose Animations Without Rebuilding: Hot Reload for Dynamic Design](https://hotswan.dev/blog/compose-animation-hot-reload): Real-time animation iteration for durations, easing curves, and colors with sub-second feedback.
+- [Hot Reloading AGSL Shaders Without a Rebuild: A Compose Walkthrough](https://hotswan.dev/blog/compose-agsl-shader-tuning): Every constant inside an AGSL shader and every Kotlin side knob tunable on a running device via literal patching.
+- [Tuning Compose Themes Live: A Visual Feedback Loop for UI Design](https://hotswan.dev/blog/compose-palette-mcp): HotSwan Palette uses an AI agent to generate and compare theme variants side-by-side without rebuilds.
+
+**Preview & Design**
+- [Compose Preview Renders Differently Than Your Real Device. Here's Why.](https://hotswan.dev/blog/compose-preview-vs-device): Why `@Preview` (layoutlib) diverges from real devices, and what that means for design fidelity.
+- [Compose Preview Driven Development with Instant Feedback](https://hotswan.dev/blog/compose-preview-driven-development): Structuring maintainable previews and extending them to on-device rendering with zero rebuild time.
+
+## Lifetime License
+
+Compose HotSwan offers a [Lifetime License](https://hotswan.dev/docs/lifetime-license) for permanent access to all features, available through a one-time sponsorship of $200 or more via GitHub Sponsors. It also includes a lifetime subscription to the [Dove Letter](https://github.com/doveletter) newsletter.
 
 ## Release Notes
 
